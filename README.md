@@ -111,7 +111,7 @@ The implementation logic can be summarized as follows:
 **Initializing the tracer**
 
 ```java
-static Tracer tracer = new DDTracer.DDTracerBuilder().build();
+       static Tracer tracer = new DDTracer.DDTracerBuilder().build();
 ```
 
 **Decorating the protocol object with a wrapper class (spanProtocol)**
@@ -154,15 +154,14 @@ static Tracer tracer = new DDTracer.DDTracerBuilder().build();
 **Receiving the request, extracting the context and building the child span**
 
 ```java
-public class MultiplicationServer {
+  public class MultiplicationServer {
 
   public static MultiplicationHandler handler;
 
   public static MultiplicationService.Processor processor;
 
   static Tracer tracer = new DDTracer.DDTracerBuilder().build();
-
-
+  
   public static void main(String [] args) {
 
 
