@@ -255,7 +255,7 @@ Multiply(3,5)
 3. Checking the related APM trace in the Datadog UI
 
 <p align="left">
-  <img src="img/Mqtt2.png" width="850" />
+  <img src="img/thrift.png" width="850" />
 </p>
 
 
