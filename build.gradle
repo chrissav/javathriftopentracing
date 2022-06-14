@@ -1,0 +1,31 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
+
+}
+
+group 'com.datadog.tracing'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'com.datadoghq', name: 'dd-trace-ot', version: '0.102.0'
+    implementation 'org.apache.thrift:libthrift:0.16.0'
+    implementation 'io.opentracing.contrib:opentracing-thrift:0.1.4'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+
+mainClassName = 'Minimal'
+
+shadowJar {
+    archiveVersion.set("0.2.0")
+    archiveFileName = "minimal-${getArchiveVersion().get()}.jar"
+}
+
