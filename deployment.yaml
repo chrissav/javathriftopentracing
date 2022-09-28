@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: javaopenthrift-server
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: javaopenthrift-server
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: javaopenthrift-server
+    spec:
+      containers:
+      - name: javaopenthrift-server
+        image: $my_registry:latest
+        ports:
+        - containerPort: 9090
+        resources:
+          limits:
+            cpu: 500m
+          requests:
+            cpu: 200m
+        env:
+          - name: DD_ENV
+            value: dev
+          - name: DD_SERVICE
+            value: javaopenthrift
+          - name: DD_LOGS_INJECTION
+            value: "true"
+          - name: DD_AGENT_HOST
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: javaopenthrift-client
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: javaopenthrift-client
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: javaopenthrift-client
+    spec:
+      containers:
+      - name: javaopenthrift-client
+        image: $my_registry:latest
+        command: [ "/bin/bash", "-c", "--" ]
+        args: [ "while true; do java -cp build/libs/minimal-0.2.0.jar MultiplicationClient; sleep 60; done;" ]
+        ports:
+        - containerPort: 9090
+        resources:
+          limits:
+            cpu: 500m
+          requests:
+            cpu: 200m
+        env:
+          - name: DD_ENV
+            value: dev
+          - name: DD_SERVICE
+            value: javaopenthrift
+          - name: DD_LOGS_INJECTION
+            value: "true"
+          - name: DD_AGENT_HOST
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: javaopenthrift
+spec:
+  ports:
+  - port: 9090
+    protocol: TCP
+    targetPort: 9090
+  selector:
+    app.kubernetes.io/name: javaopenthrift-server

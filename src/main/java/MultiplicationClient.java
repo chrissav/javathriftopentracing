@@ -14,16 +14,15 @@ public class MultiplicationClient {
 
     static Tracer tracer = new DDTracer.DDTracerBuilder().build();
 
-    public static void main(String [] args) {
-
+    public static void main(String[] args) {
 
         try {
             TTransport transport;
 
-            transport = new TSocket("localhost", 9090);
+            transport = new TSocket("javaopenthrift", 9090);
             transport.open();
 
-            TProtocol protocol = new  TBinaryProtocol(transport);
+            TProtocol protocol = new TBinaryProtocol(transport);
             TProtocol spanProtocol = new SpanProtocol(protocol, tracer);
             MultiplicationService.Client client = new MultiplicationService.Client(spanProtocol);
 
@@ -35,20 +34,19 @@ public class MultiplicationClient {
         }
     }
 
-    private static void perform(MultiplicationService.Client client) throws TException
-    {
+    private static void perform(MultiplicationService.Client client) throws TException {
 
         Span span = tracer.buildSpan("servlet.request").start();
-        try(Scope scope = tracer.scopeManager().activate(span)){
-            span.setTag(DDTags.SERVICE_NAME, "basicservice");
+        try (Scope scope = tracer.scopeManager().activate(span)) {
+            span.setTag(DDTags.SERVICE_NAME, "javaopenthrift");
             span.setTag(DDTags.RESOURCE_NAME, "GET /callme");
             span.setTag(DDTags.SPAN_TYPE, "web");
             try {
                 System.out.println("Tracing randomly");
-                int product = client.multiply(3,5);
+                int product = client.multiply(3, 5);
                 System.out.println("3*5=" + product);
                 Thread.sleep(20);
-            } catch(InterruptedException e){
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             span.finish();
